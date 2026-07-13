@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>健康体检报告</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-900: #0D3B66;
+            --primary-800: #1565C0;
+            --primary-700: #1976D2;
+            --primary-600: #1E88E5;
+            --primary-500: #2196F3;
+            --primary-400: #42A5F5;
+            --primary-300: #64B5F6;
+            --primary-200: #90CAF9;
+            --primary-100: #BBDEFB;
+            --primary-50: #E3F2FD;
+            --green-700: #388E3C;
+            --green-600: #43A047;
+            --green-500: #4CAF50;
+            --green-400: #66BB6A;
+            --green-100: #C8E6C9;
+            --green-50: #E8F5E9;
+            --orange-500: #FF9800;
+            --orange-400: #FFA726;
+            --orange-100: #FFE0B2;
+            --orange-50: #FFF3E0;
+            --red-500: #F44336;
+            --red-100: #FFCDD2;
+            --red-50: #FFEBEE;
+            --gray-900: #212121;
+            --gray-800: #424242;
+            --gray-700: #616161;
+            --gray-600: #757575;
+            --gray-500: #9E9E9E;
+            --gray-400: #BDBDBD;
+            --gray-300: #E0E0E0;
+            --gray-200: #EEEEEE;
+            --gray-100: #F5F5F5;
+            --gray-50: #FAFAFA;
+            --font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--gray-100);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--gray-100);
+            position: relative;
+            overflow-x: hidden;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ========== 导航栏 ========== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-back {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .nav-back:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        .nav-back svg {
+            width: 22px;
+            height: 22px;
+            stroke: white;
+        }
+
+        .nav-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 0.5px;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .nav-placeholder {
+            width: 40px;
+        }
+
+        /* ========== 列表页 ========== */
+        .list-page {
+            padding-bottom: 32px;
+        }
+
+        .year-section {
+            margin-bottom: 8px;
+        }
+
+        .year-label {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--gray-600);
+            padding: 16px 20px 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .report-card {
+            background: white;
+            margin: 0 16px 12px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 14px 16px;
+            transition: var(--transition-normal);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .report-card:active {
+            transform: scale(0.98);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4A90D9, #6BA3E0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-avatar svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .card-person {
+            flex: 1;
+        }
+
+        .card-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+            line-height: 1.3;
+        }
+
+        .card-age-gender {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .btn-view-report {
+            padding: 7px 18px;
+            background: linear-gradient(135deg, #4A90D9, #2196F3);
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        .btn-view-report:active {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+        }
+
+        .card-bottom {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .card-date {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .card-org {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 2px;
+        }
+
+        .card-id {
+            font-size: 12px;
+            color: var(--gray-600);
+            font-family: 'Courier New', monospace;
+        }
+
+        .no-more {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        .no-more::before,
+        .no-more::after {
+            content: '';
+            display: inline-block;
+            width: 40px;
+            height: 1px;
+            background: var(--gray-300);
+            vertical-align: middle;
+            margin: 0 12px;
+        }
+
+        /* ========== 详情页 ========== */
+        .detail-page {
+            background: var(--gray-100);
+            min-height: 100vh;
+        }
+
+        /* 详情页白色导航栏 */
+        .detail-page .navbar {
+            background: white;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            position: fixed;
+            top: 0;
+            z-index: 200;
+            width: 100%;
+        }
+
+        .detail-page .nav-back {
+            background: transparent;
+        }
+
+        .detail-page .nav-back svg {
+            stroke: var(--gray-800);
+        }
+
+        .detail-page .nav-title {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, #5B5FE4 0%, #4F8EF7 100%);
+            padding: 68px 20px 36px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .detail-header::after {
+            content: '';
+            position: absolute;
+            bottom: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140%;
+            height: 52px;
+            background: var(--gray-100);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+
+        .header-main-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .header-org {
+            font-size: 13px;
+            opacity: 0.85;
+            font-weight: 400;
+            margin-top: 6px;
+        }
+
+        .detail-basic-info {
+            background: white;
+            margin: -16px 16px 12px;
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            z-index: 2;
+        }
+
+        .basic-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .basic-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .basic-info-label {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .basic-info-value {
+            font-size: 14px;
+            color: var(--gray-800);
+            font-weight: 500;
+        }
+
+        .detail-content {
+            padding: 0 16px 32px;
+        }
+
+        /* ===== 可折叠卡片 ===== */
+        .section-card {
+            background: white;
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            background: linear-gradient(90deg, var(--primary-50), white);
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: background 0.2s;
+        }
+
+        .section-header:active {
+            background: var(--gray-100);
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .section-title {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .section-arrow {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .section-arrow svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--gray-400);
+        }
+
+        .section-card.collapsed .section-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .section-card.collapsed .section-header {
+            border-bottom: none;
+        }
+
+        .section-body-wrap {
+            max-height: 5000px;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .section-card.collapsed .section-body-wrap {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .section-body {
+            padding: 12px 16px;
+        }
+
+        /* 数据表格 - 两列（项目+值） */
+        .simple-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .simple-table tr {
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .simple-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .simple-table td {
+            padding: 10px 8px;
+            font-size: 13px;
+        }
+
+        .simple-table td:first-child {
+            color: var(--gray-600);
+            width: 40%;
+        }
+
+        .simple-table td:last-child {
+            color: var(--gray-800);
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* 辅助检查四列表格 - 带表头 */
+        .exam-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .exam-table thead th {
+            padding: 10px 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-align: center;
+            border-bottom: 2px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .exam-table thead th:first-child {
+            text-align: left;
+            width: 38%;
+        }
+
+        .exam-table thead th:nth-child(2) {
+            width: 22%;
+        }
+
+        .exam-table thead th:nth-child(3) {
+            width: 26%;
+        }
+
+        .exam-table thead th:last-child {
+            width: 14%;
+        }
+
+        .exam-table tbody tr {
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .exam-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .exam-table tbody td {
+            padding: 9px 6px;
+            font-size: 13px;
+            vertical-align: top;
+            text-align: center;
+        }
+
+        .exam-table tbody td:first-child {
+            text-align: left;
+            color: var(--gray-700);
+        }
+
+        .exam-table .val-red {
+            color: var(--red-500);
+            font-weight: 600;
+        }
+
+        .exam-table .arrow-up {
+            color: var(--red-500);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* 记录表格 - 住院/病床 */
+        .record-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .record-table thead th {
+            padding: 8px 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-align: center;
+            border-bottom: 2px solid var(--gray-200);
+            background: var(--gray-50);
+            white-space: nowrap;
+        }
+
+        .record-table tbody td {
+            padding: 10px 6px;
+            font-size: 12px;
+            color: var(--gray-800);
+            text-align: center;
+            border-bottom: 1px solid var(--gray-100);
+            line-height: 1.5;
+        }
+
+        .record-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .val-normal {
+            color: var(--green-700) !important;
+        }
+
+        .val-high {
+            color: var(--orange-500) !important;
+        }
+
+        .val-abnormal {
+            color: var(--red-500) !important;
+        }
+
+        /* 健康评价 */
+        .eval-box {
+            background: linear-gradient(135deg, var(--primary-50), var(--green-50));
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            border-left: 4px solid var(--primary-500);
+        }
+
+        .eval-box.warn {
+            background: linear-gradient(135deg, var(--orange-50), #FFF8E1);
+            border-left-color: var(--orange-500);
+        }
+
+        .eval-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .eval-text {
+            font-size: 14px;
+            color: var(--gray-800);
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* 标签 */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-normal {
+            background: var(--green-50);
+            color: var(--green-700);
+        }
+
+        .badge-warn {
+            background: var(--orange-50);
+            color: #E65100;
+        }
+
+        .badge-error {
+            background: var(--red-50);
+            color: var(--red-500);
+        }
+
+        /* 检查描述块 */
+        .desc-block {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+
+        .desc-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .desc-label {
+            font-size: 11px;
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .desc-text {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.7;
+        }
+
+        /* 用药列表 */
+        .drug-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .drug-item:last-child {
+            border-bottom: none;
+        }
+
+        .drug-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .drug-detail {
+            font-size: 12px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .footer-notice {
+            text-align: center;
+            padding: 20px 16px 32px;
+            color: var(--gray-400);
+            font-size: 12px;
+        }
+
+        .footer-notice svg {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 4px;
+            fill: var(--gray-400);
+        }
+
+        /* 子分类标题 */
+        .sub-category {
+            padding: 10px 0 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-800);
+            border-bottom: 1px solid var(--primary-50);
+        }
+
+        /* 视力卡片 */
+        .vision-card {
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin: 4px 0 12px;
+            border: 1px solid #E0F2F1;
+        }
+
+        .vision-title {
+            background: linear-gradient(90deg, #E0F7FA, #E8F5E9);
+            padding: 8px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #00897B;
+        }
+
+        .vision-body {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 12px 6px 16px;
+            position: relative;
+            background: white;
+            gap: 4px;
+        }
+
+        .vision-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .vision-eye-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .eye-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .eye-r {
+            background: var(--green-500);
+        }
+
+        .eye-l {
+            background: var(--primary-500);
+        }
+
+        .vision-divider-left,
+        .vision-divider-right {
+            width: 70%;
+            height: 2px;
+            margin-bottom: 10px;
+            position: relative;
+            border-radius: 1px;
+        }
+
+        .vision-divider-left {
+            background: var(--green-400);
+        }
+
+        .vision-divider-right {
+            background: var(--primary-400);
+        }
+
+        .vision-divider-left::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid var(--green-400);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .vision-divider-right::after {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-right: 6px solid var(--primary-400);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .vision-data-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 8px;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .vd-label {
+            color: var(--gray-500);
+        }
+
+        .vd-val {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        .vision-avatar {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 430px) {
+            .app-container {
+                max-width: 100%;
+                box-shadow: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- ========== 列表页 ========== -->
+        <div class="page list-page active" id="listPage">
+            <div class="navbar">
+                <div class="nav-back" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg></div>
+                <div class="nav-title">健康体检报告</div>
+                <div class="nav-placeholder"></div>
+            </div>
+            <div class="year-section">
+                <div class="year-label">2026年</div>
+                <div class="report-card" onclick="goToDetail()">
+                    <div class="card-top">
+                        <div class="card-avatar">
+                            <svg viewBox="0 0 40 40" fill="none">
+                                <circle cx="20" cy="20" r="20" fill="url(#avtGrad)" />
+                                <ellipse cx="20" cy="16" rx="9" ry="10" fill="#F5D0C5" />
+                                <path d="M11 14c0-3 4-5 9-5s9 2 9 5" stroke="#E8B4A0" stroke-width="1.2" fill="none" />
+                                <path d="M9 22c0-2 2-4 4-4h14c2 0 4 2 4 4v6c0 3-3 6-6 6H15c-3 0-6-3-6-6v-6z"
+                                    fill="#E8EAF6" />
+                                <circle cx="16.5" cy="17" r="2.2" fill="#333" />
+                                <circle cx="23.5" cy="17" r="2.2" fill="#333" />
+                                <circle cx="16.8" cy="16.7" r="0.7" fill="white" />
+                                <circle cx="23.8" cy="16.7" r="0.7" fill="white" />
+                                <path d="M18 22.5c0.8 0.6 2.4 0.6 3.2 0" stroke="#D4846A" stroke-width="1" fill="none"
+                                    stroke-linecap="round" />
+                                <path d="M14 14.5l-1-2M26 14.5l1-2" stroke="#B0BEC5" stroke-width="1.2"
+                                    stroke-linecap="round" />
+                                <defs>
+                                    <linearGradient id="avtGrad" x1="0" y1="0" x2="40" y2="40">
+                                        <stop offset="0%" stop-color="#5B9BD5" />
+                                        <stop offset="100%" stop-color="#4A7FC1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="card-person">
+                            <div class="card-name">*明</div>
+                            <div class="card-age-gender">67岁 男</div>
+                        </div>
+                        <button class="btn-view-report">查看报告</button>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="card-title-row">
+                            <div class="card-title">老年人健康体检</div>
+                            <div class="card-date">2026-03-15</div>
+                        </div>
+                        <div class="card-org">黄浦区瑞金二路街道社区卫生服务中心</div>
+                        <div class="card-id">编号：HP20260315001</div>
+                    </div>
+                </div>
+            </div>
+            <div class="year-section">
+                <div class="year-label">2025年</div>
+                <div class="report-card" onclick="goToDetail()">
+                    <div class="card-top">
+                        <div class="card-avatar">
+                            <svg viewBox="0 0 40 40" fill="none">
+                                <circle cx="20" cy="20" r="20" fill="url(#avtGrad2)" />
+                                <ellipse cx="20" cy="16" rx="9" ry="10" fill="#F5D0C5" />
+                                <path d="M11 14c0-3 4-5 9-5s9 2 9 5" stroke="#E8B4A0" stroke-width="1.2" fill="none" />
+                                <path d="M9 22c0-2 2-4 4-4h14c2 0 4 2 4 4v6c0 3-3 6-6 6H15c-3 0-6-3-6-6v-6z"
+                                    fill="#E8EAF6" />
+                                <circle cx="16.5" cy="17" r="2.2" fill="#333" />
+                                <circle cx="23.5" cy="17" r="2.2" fill="#333" />
+                                <circle cx="16.8" cy="16.7" r="0.7" fill="white" />
+                                <circle cx="23.8" cy="16.7" r="0.7" fill="white" />
+                                <path d="M18 22.5c0.8 0.6 2.4 0.6 3.2 0" stroke="#D4846A" stroke-width="1" fill="none"
+                                    stroke-linecap="round" />
+                                <path d="M14 14.5l-1-2M26 14.5l1-2" stroke="#B0BEC5" stroke-width="1.2"
+                                    stroke-linecap="round" />
+                                <defs>
+                                    <linearGradient id="avtGrad2" x1="0" y1="0" x2="40" y2="40">
+                                        <stop offset="0%" stop-color="#5B9BD5" />
+                                        <stop offset="100%" stop-color="#4A7FC1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="card-person">
+                            <div class="card-name">*明</div>
+                            <div class="card-age-gender">66岁 男</div>
+                        </div>
+                        <button class="btn-view-report">查看报告</button>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="card-title-row">
+                            <div class="card-title">老年人健康体检</div>
+                            <div class="card-date">2025-03-10</div>
+                        </div>
+                        <div class="card-org">黄浦区瑞金二路街道社区卫生服务中心</div>
+                        <div class="card-id">编号：HP20250310002</div>
+                    </div>
+                </div>
+            </div>
+            <div class="no-more">没有更多了</div>
+        </div>
+
+        <!-- ========== 详情页 ========== -->
+        <div class="page detail-page" id="detailPage">
+            <div class="navbar">
+                <div class="nav-back" onclick="goToList()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg></div>
+                <div class="nav-title">报告详情</div>
+                <div class="nav-placeholder"></div>
+            </div>
+
+            <!-- 顶部区域 -->
+            <div class="detail-header">
+                <div class="header-content">
+                    <div class="header-main-title">老年人健康体检报告</div>
+                    <div class="header-org">黄浦区瑞金二路街道社区卫生服务中心</div>
+                </div>
+            </div>
+
+            <div class="detail-basic-info">
+                <div class="basic-info-row"><span class="basic-info-label">姓名</span><span
+                        class="basic-info-value">张*明</span></div>
+                <div class="basic-info-row"><span class="basic-info-label">体检机构</span><span class="basic-info-value"
+                        style="font-size:13px;">黄浦区瑞金二路街道社区卫生服务中心</span></div>
+                <div class="basic-info-row"><span class="basic-info-label">体检时间</span><span
+                        class="basic-info-value">2026-03-15</span></div>
+                <div class="basic-info-row"><span class="basic-info-label">体检编号</span><span class="basic-info-value"
+                        style="font-family: 'Courier New', monospace; font-size: 13px;">HP20260315001</span></div>
+            </div>
+
+            <!-- ===== 健康评价 ===== -->
+            <div class="section-card" id="sec-eval">
+                <div class="section-header" onclick="toggleSection('sec-eval')">
+                    <div class="section-icon" style="background: var(--primary-100);"><svg viewBox="0 0 24 24"
+                            fill="var(--primary-700)">
+                            <path
+                                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                        </svg></div>
+                    <div class="section-title">健康评价</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body">
+                        <div class="eval-box warn">
+                            <div class="eval-text">1. 血压偏高（左侧145/73、右侧140/75mmHg）<br>2. B超胆囊多发息肉，胰腺显示不清<br>3.
+                                心电图左心室高电压，胸部CT两肺肺大泡及纤维灶、主动脉壁钙化<br>4. 血尿酸偏高（457.98μmol/L↑），尿潜血阳性（+-↑）</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 健康指导 ===== -->
+            <div class="section-card collapsed" id="sec-guide">
+                <div class="section-header" onclick="toggleSection('sec-guide')">
+                    <div class="section-icon" style="background: var(--green-100);"><svg viewBox="0 0 24 24"
+                            fill="var(--green-700)">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                        </svg></div>
+                    <div class="section-title">健康指导</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body">
+                        <div class="eval-box">
+                            <div class="eval-label">健康指导</div>
+                            <div class="eval-text">1. 纳入慢性病患者健康管理<br>2. 建议复查<br>3. 建议转诊</div>
+                        </div>
+                        <div style="height:8px;"></div>
+                        <div class="eval-box">
+                            <div class="eval-label">危险因素控制</div>
+                            <div class="eval-text">1. 戒烟 &nbsp; 2. 健康饮酒 &nbsp; 3. 饮食控制<br>4. 锻炼 &nbsp; 5.
+                                减体重（目标：52kg）<br>6. 建议接种疫苗（流感疫苗）</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 一般状况 ===== -->
+            <div class="section-card collapsed" id="sec-general">
+                <div class="section-header" onclick="toggleSection('sec-general')">
+                    <div class="section-icon" style="background: #E8F4FD;"><svg viewBox="0 0 24 24" fill="#1976D2">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+                        </svg></div>
+                    <div class="section-title">一般状况</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0 16px;">
+                        <table class="simple-table">
+                            <tr>
+                                <td>症状</td>
+                                <td>无症状</td>
+                            </tr>
+                            <tr>
+                                <td>体温</td>
+                                <td>36.5℃</td>
+                            </tr>
+                            <tr>
+                                <td>脉率</td>
+                                <td>76次/分</td>
+                            </tr>
+                            <tr>
+                                <td>呼吸频率</td>
+                                <td>18次/分</td>
+                            </tr>
+                            <tr>
+                                <td>左侧血压</td>
+                                <td class="val-high">145/73mmHg</td>
+                            </tr>
+                            <tr>
+                                <td>右侧血压</td>
+                                <td class="val-high">140/75mmHg</td>
+                            </tr>
+                            <tr>
+                                <td>身高</td>
+                                <td>164cm</td>
+                            </tr>
+                            <tr>
+                                <td>体重</td>
+                                <td>54kg</td>
+                            </tr>
+                            <tr>
+                                <td>腰围</td>
+                                <td>82cm</td>
+                            </tr>
+                            <tr>
+                                <td>体质指数(BMI)</td>
+                                <td>20.1</td>
+                            </tr>
+                            <tr>
+                                <td>健康状态自我评估</td>
+                                <td>基本满意</td>
+                            </tr>
+                            <tr>
+                                <td>生活自理能力评估</td>
+                                <td>可自理</td>
+                            </tr>
+                            <tr>
+                                <td>认知功能</td>
+                                <td>粗筛阴性</td>
+                            </tr>
+                            <tr>
+                                <td>情感状态</td>
+                                <td>粗筛阴性</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 生活方式 ===== -->
+            <div class="section-card collapsed" id="sec-lifestyle">
+                <div class="section-header" onclick="toggleSection('sec-lifestyle')">
+                    <div class="section-icon" style="background: var(--green-100);"><svg viewBox="0 0 24 24"
+                            fill="var(--green-700)">
+                            <path
+                                d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
+                        </svg></div>
+                    <div class="section-title">生活方式</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0 16px;">
+                        <table class="simple-table">
+                            <tr>
+                                <td>锻炼频率</td>
+                                <td>偶尔</td>
+                            </tr>
+                            <tr>
+                                <td>每次锻炼时间</td>
+                                <td>30分钟</td>
+                            </tr>
+                            <tr>
+                                <td>坚持锻炼时间</td>
+                                <td>5年</td>
+                            </tr>
+                            <tr>
+                                <td>锻炼方式</td>
+                                <td>散步</td>
+                            </tr>
+                            <tr>
+                                <td>饮食习惯</td>
+                                <td>荤素均衡</td>
+                            </tr>
+                            <tr>
+                                <td>吸烟状况</td>
+                                <td>已戒烟</td>
+                            </tr>
+                            <tr>
+                                <td>日吸烟量</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>开始吸烟年龄</td>
+                                <td>20岁</td>
+                            </tr>
+                            <tr>
+                                <td>戒烟年龄</td>
+                                <td>55岁</td>
+                            </tr>
+                            <tr>
+                                <td>饮酒频率</td>
+                                <td>偶尔</td>
+                            </tr>
+                            <tr>
+                                <td>日饮酒量</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>是否戒酒</td>
+                                <td>未戒酒</td>
+                            </tr>
+                            <tr>
+                                <td>近一年内是否曾醉酒</td>
+                                <td>否</td>
+                            </tr>
+                            <tr>
+                                <td>饮酒种类</td>
+                                <td>黄酒</td>
+                            </tr>
+                            <tr>
+                                <td>职业病危害接触史</td>
+                                <td>无</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 脏器功能 ===== -->
+            <div class="section-card collapsed" id="sec-organ">
+                <div class="section-header" onclick="toggleSection('sec-organ')">
+                    <div class="section-icon" style="background: #FFF8E1;"><svg viewBox="0 0 24 24" fill="#FF8F00">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg></div>
+                    <div class="section-title">脏器功能</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0 16px;">
+                        <!-- 视力卡片 -->
+                        <div class="vision-card">
+                            <div class="vision-title">视力</div>
+                            <div class="vision-body">
+                                <div class="vision-col">
+                                    <div class="vision-eye-name"><span class="eye-tag eye-r">R</span> 右眼</div>
+                                    <div class="vision-divider-left"></div>
+                                    <div class="vision-data-row"><span class="vd-label">裸眼</span><span
+                                            class="vd-val">0.5</span></div>
+                                    <div class="vision-data-row"><span class="vd-label">戴眼</span><span
+                                            class="vd-val">0.8</span></div>
+                                </div>
+                                <svg class="vision-avatar" viewBox="0 0 56 56">
+                                    <circle cx="28" cy="24" r="16" fill="#F0F0F0" />
+                                    <ellipse cx="21" cy="22" rx="5.5" ry="5" fill="none" stroke="#5D4037"
+                                        stroke-width="1.3" />
+                                    <ellipse cx="35" cy="22" rx="5.5" ry="5" fill="none" stroke="#5D4037"
+                                        stroke-width="1.3" />
+                                    <line x1="26.5" y1="22" x2="29.5" y2="22" stroke="#5D4037" stroke-width="1.3" />
+                                    <circle cx="21" cy="22" r="2.5" fill="#26A69A" />
+                                    <circle cx="35" cy="22" r="2.5" fill="#26A69A" />
+                                    <path d="M24 31 Q28 33 32 31" stroke="#C4A484" stroke-width="1" fill="none" />
+                                    <path d="M12 24 Q10 20 14 18" stroke="#F5F5F5" stroke-width="2" fill="none" />
+                                    <path d="M44 24 Q46 20 42 18" stroke="#F5F5F5" stroke-width="2" fill="none" />
+                                    <path d="M16 18 Q28 10 40 18" stroke="#D7CCC8" stroke-width="1" fill="#ECEFF1" />
+                                    <path d="M18 40 Q28 36 38 40" stroke="#D7CCC8" stroke-width="1" fill="#FFCCBC" />
+                                    <path d="M18 40 Q28 42 38 40" stroke="#D7CCC8" stroke-width="1" fill="#FFCCBC" />
+                                    <circle cx="14" cy="32" r="3.5" fill="#FFCCBC" />
+                                    <circle cx="42" cy="32" r="3.5" fill="#FFCCBC" />
+                                </svg>
+                                <div class="vision-col">
+                                    <div class="vision-eye-name">左眼 <span class="eye-tag eye-l">L</span></div>
+                                    <div class="vision-divider-right"></div>
+                                    <div class="vision-data-row"><span class="vd-label">裸眼</span><span
+                                            class="vd-val">0.6</span></div>
+                                    <div class="vision-data-row"><span class="vd-label">戴眼</span><span
+                                            class="vd-val">0.8</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="simple-table">
+                            <tr>
+                                <td>口唇</td>
+                                <td>红润</td>
+                            </tr>
+                            <tr>
+                                <td>齿列</td>
+                                <td>缺齿</td>
+                            </tr>
+                            <tr>
+                                <td>咽部</td>
+                                <td>无充血</td>
+                            </tr>
+                        </table>
+                        <table class="simple-table">
+                            <tr>
+                                <td>听力</td>
+                                <td>听见</td>
+                            </tr>
+                            <tr>
+                                <td>运动功能</td>
+                                <td>可顺利完成</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 查体 ===== -->
+            <div class="section-card collapsed" id="sec-checkup">
+                <div class="section-header" onclick="toggleSection('sec-checkup')">
+                    <div class="section-icon" style="background: #F3E5F5;"><svg viewBox="0 0 24 24" fill="#7B1FA2">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                        </svg></div>
+                    <div class="section-title">查体</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0 16px;">
+                        <table class="simple-table">
+                            <tr>
+                                <td>眼底</td>
+                                <td>正常</td>
+                            </tr>
+                            <tr>
+                                <td>皮肤</td>
+                                <td>正常</td>
+                            </tr>
+                            <tr>
+                                <td>巩膜</td>
+                                <td>正常</td>
+                            </tr>
+                            <tr>
+                                <td>淋巴结</td>
+                                <td>未触及</td>
+                            </tr>
+                            <tr>
+                                <td>桶状胸</td>
+                                <td>否</td>
+                            </tr>
+                            <tr>
+                                <td>呼吸音</td>
+                                <td>正常</td>
+                            </tr>
+                            <tr>
+                                <td>罗音</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>心率</td>
+                                <td>76次/分</td>
+                            </tr>
+                            <tr>
+                                <td>心律</td>
+                                <td>齐</td>
+                            </tr>
+                            <tr>
+                                <td>杂音</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>腹部压痛</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>腹部包块</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>肝大</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>脾大</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>移动性浊音</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>下肢水肿</td>
+                                <td>无</td>
+                            </tr>
+                            <tr>
+                                <td>足背动脉搏动</td>
+                                <td>触及双侧对称</td>
+                            </tr>
+                            <tr>
+                                <td>肛门指检</td>
+                                <td>未及异常</td>
+                            </tr>
+                            <tr>
+                                <td>乳腺</td>
+                                <td>未见异常</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 辅助检查（检验） ===== -->
+            <div class="section-card collapsed" id="sec-lis">
+                <div class="section-header" onclick="toggleSection('sec-lis')">
+                    <div class="section-icon" style="background: #FFEBEE;"><svg viewBox="0 0 24 24" fill="#D32F2F">
+                            <path d="M7 2v11h3v9l7-12h-4l4-8z" />
+                        </svg></div>
+                    <div class="section-title">检验报告</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0;">
+                        <!-- 血常规 -->
+                        <div class="sub-category" style="padding-left: 16px;">血常规</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>血红蛋白(Hb)</td>
+                                    <td>142.5</td>
+                                    <td>130.0～175.4</td>
+                                    <td>g/L</td>
+                                </tr>
+                                <tr>
+                                    <td>白细胞(WBC)</td>
+                                    <td>4.09</td>
+                                    <td>3.50～9.50</td>
+                                    <td>10⁹/L</td>
+                                </tr>
+                                <tr>
+                                    <td>血小板(PLT)</td>
+                                    <td>210.4</td>
+                                    <td>125.0～350.0</td>
+                                    <td>10⁹/L</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 尿常规 -->
+                        <div class="sub-category" style="padding-left: 16px;">尿常规</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>尿蛋白</td>
+                                    <td>-</td>
+                                    <td>阴性</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>尿糖</td>
+                                    <td>-</td>
+                                    <td>阴性</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>尿酮体</td>
+                                    <td>-</td>
+                                    <td>阴性</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>尿潜血</td>
+                                    <td class="val-red">+-</td>
+                                    <td>阴性</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 空腹血糖 -->
+                        <div class="sub-category" style="padding-left: 16px;">空腹血糖</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>空腹血糖</td>
+                                    <td>4.70</td>
+                                    <td>3.90～6.10</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 糖化血红蛋白 -->
+                        <div class="sub-category" style="padding-left: 16px;">糖化血红蛋白</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>糖化血红蛋白</td>
+                                    <td>4.82</td>
+                                    <td>4.00～6.10</td>
+                                    <td>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 肝功能 -->
+                        <div class="sub-category" style="padding-left: 16px;">肝功能</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>血清谷丙转氨酶(ALT)</td>
+                                    <td>21.48</td>
+                                    <td>9.0～50.0</td>
+                                    <td>U/L</td>
+                                </tr>
+                                <tr>
+                                    <td>血清谷草转氨酶(AST)</td>
+                                    <td>35.19</td>
+                                    <td>15.0～40.0</td>
+                                    <td>U/L</td>
+                                </tr>
+                                <tr>
+                                    <td>白蛋白(ALB)</td>
+                                    <td>45.35</td>
+                                    <td>40.0～55.0</td>
+                                    <td>g/L</td>
+                                </tr>
+                                <tr>
+                                    <td>总胆红素(TBIL)</td>
+                                    <td>15.28</td>
+                                    <td>0.0～23.0</td>
+                                    <td>μmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>结合胆红素(CB)</td>
+                                    <td>4.59</td>
+                                    <td>&lt;6.8</td>
+                                    <td>μmol/L</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 肾功能 -->
+                        <div class="sub-category" style="padding-left: 16px;">肾功能</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>血清肌酐(Cr)</td>
+                                    <td>75.26</td>
+                                    <td>57.0～111.0</td>
+                                    <td>μmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>血尿素(BUN)</td>
+                                    <td>5.26</td>
+                                    <td>3.6～9.5</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>血尿酸(UA)</td>
+                                    <td class="val-red">457.98↑</td>
+                                    <td>208.0～428.0</td>
+                                    <td>μmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>血钾浓度(K)</td>
+                                    <td>4.22</td>
+                                    <td>3.50～5.30</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>血钠浓度(Na)</td>
+                                    <td>141.90</td>
+                                    <td>137.0～147.0</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 血脂 -->
+                        <div class="sub-category" style="padding-left: 16px;">血脂</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>总胆固醇(CHO)</td>
+                                    <td>3.72</td>
+                                    <td>0.0～5.18</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>甘油三酯(TG)</td>
+                                    <td>0.96</td>
+                                    <td>&lt;1.70</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>低密度脂蛋白(LDL)</td>
+                                    <td>1.45</td>
+                                    <td>&lt;3.37</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                                <tr>
+                                    <td>高密度脂蛋白(HDL)</td>
+                                    <td>1.86</td>
+                                    <td>≥1.04</td>
+                                    <td>mmol/L</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 乙型肝炎表面抗原 -->
+                        <div class="sub-category" style="padding-left: 16px;">乙型肝炎表面抗原</div>
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>检查项目</th>
+                                    <th>结果</th>
+                                    <th>参考值</th>
+                                    <th>单位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>乙型肝炎表面抗原</td>
+                                    <td>阴性</td>
+                                    <td>阴性</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 辅助检查（检查） ===== -->
+            <div class="section-card collapsed" id="sec-ris">
+                <div class="section-header" onclick="toggleSection('sec-ris')">
+                    <div class="section-icon" style="background: #E0F7FA;"><svg viewBox="0 0 24 24" fill="#00838F">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                        </svg></div>
+                    <div class="section-title">检查报告</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body">
+                        <!-- 心电图 -->
+                        <div style="padding:4px 0 6px; font-size:13px; font-weight:600; color:var(--primary-800);">心电图
+                        </div>
+                        <div class="desc-block">
+                            <div class="desc-text" style="color:var(--gray-800);">HR73次/分，窦性心律，R波上升不良</div>
+                        </div>
+                        <!-- B超 -->
+                        <div style="padding:12px 0 6px; font-size:13px; font-weight:600; color:var(--primary-800);">B超
+                        </div>
+                        <div class="desc-block">
+                            <div class="desc-text" style="color:var(--gray-800);">
+                                肝：未见异常、胆：胆囊多发息肉（大者直径约6mm）、脾：未见异常、肾：未检、胰：胰腺显示不清</div>
+                        </div>
+                        <!-- 胸部CT -->
+                        <div style="padding:12px 0 6px; font-size:13px; font-weight:600; color:var(--primary-800);">胸部CT
+                        </div>
+                        <div class="desc-block">
+                            <div class="desc-text" style="color:var(--gray-800);">两肺肺大泡及纤维灶，主动脉壁钙化</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 中医体质辨识 ===== -->
+            <div class="section-card collapsed" id="sec-tcm">
+                <div class="section-header" onclick="toggleSection('sec-tcm')">
+                    <div class="section-icon" style="background: #FFF3E0;"><svg viewBox="0 0 24 24" fill="#E65100">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg></div>
+                    <div class="section-title">中医体质辨识</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body">
+                        <div class="eval-text" style="font-size:14px; color:var(--gray-800);">基本平和质</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 现存主要健康问题 ===== -->
+            <div class="section-card collapsed" id="sec-health">
+                <div class="section-header" onclick="toggleSection('sec-health')">
+                    <div class="section-icon" style="background: var(--red-100);"><svg viewBox="0 0 24 24"
+                            fill="var(--red-500)">
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+                        </svg></div>
+                    <div class="section-title">现存主要健康问题</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0 16px;">
+                        <table class="simple-table">
+                            <tr>
+                                <td>脑血管疾病</td>
+                                <td>未发现</td>
+                            </tr>
+                            <tr>
+                                <td>肾脏疾病</td>
+                                <td>未发现</td>
+                            </tr>
+                            <tr>
+                                <td>心脏疾病</td>
+                                <td>未发现</td>
+                            </tr>
+                            <tr>
+                                <td>血管疾病</td>
+                                <td>未发现</td>
+                            </tr>
+                            <tr>
+                                <td>眼部疾病</td>
+                                <td class="val-abnormal">白内障</td>
+                            </tr>
+                            <tr>
+                                <td>神经系统疾病</td>
+                                <td>未发现</td>
+                            </tr>
+                            <tr>
+                                <td>其他系统疾病</td>
+                                <td>未发现</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 住院治疗情况 ===== -->
+            <div class="section-card collapsed" id="sec-hosp">
+                <div class="section-header" onclick="toggleSection('sec-hosp')">
+                    <div class="section-icon" style="background: #E8EAF6;"><svg viewBox="0 0 24 24" fill="#3F51B5">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                        </svg></div>
+                    <div class="section-title">住院治疗情况</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0;">
+                        <table class="record-table">
+                            <thead>
+                                <tr>
+                                    <th>入/出院日期</th>
+                                    <th>原因</th>
+                                    <th>医疗机构名称</th>
+                                    <th>病案号</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2025-08-10~2025-08-18</td>
+                                    <td>胆囊炎急性发作</td>
+                                    <td>上海市瑞金医院</td>
+                                    <td>BA2025081001</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 家庭病床史 ===== -->
+            <div class="section-card collapsed" id="sec-homebed">
+                <div class="section-header" onclick="toggleSection('sec-homebed')">
+                    <div class="section-icon" style="background: #E0F2F1;"><svg viewBox="0 0 24 24" fill="#00695C">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                        </svg></div>
+                    <div class="section-title">家庭病床史</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body" style="padding: 0;">
+                        <table class="record-table">
+                            <thead>
+                                <tr>
+                                    <th>建/撤床日期</th>
+                                    <th>原因</th>
+                                    <th>医疗机构名称</th>
+                                    <th>病案号</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2025-06-01~2025-07-15</td>
+                                    <td>脑梗死后遗症康复治疗</td>
+                                    <td>瑞金二路街道社区卫生服务中心</td>
+                                    <td>BC2025060101</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 主要用药情况 ===== -->
+            <div class="section-card collapsed" id="sec-drug">
+                <div class="section-header" onclick="toggleSection('sec-drug')">
+                    <div class="section-icon" style="background: #FCE4EC;"><svg viewBox="0 0 24 24" fill="#C2185B">
+                            <path
+                                d="M4.22 11.29l4.95-4.95c.39-.39 1.02-.39 1.41 0l7.07 7.07c.39.39.39 1.02 0 1.41l-4.95 4.95c-.39.39-1.02.39-1.41 0L4.22 12.7c-.39-.39-.39-1.02 0-1.41zm2.12.71L11.4 17.07 15.07 13.4l-5.06-5.07-3.67 3.67z" />
+                        </svg></div>
+                    <div class="section-title">主要用药情况</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body">
+                        <div class="drug-item">
+                            <div class="drug-name">氨氯地平片</div>
+                            <div class="drug-detail">用法：口服 &nbsp;|&nbsp; 用量：5mg &nbsp;|&nbsp; 用药时间：2年<br>服药依从性：<span
+                                    class="badge badge-normal">规律</span></div>
+                        </div>
+                        <div class="drug-item">
+                            <div class="drug-name">阿司匹林肠溶片</div>
+                            <div class="drug-detail">用法：口服 &nbsp;|&nbsp; 用量：100mg &nbsp;|&nbsp; 用药时间：1年<br>服药依从性：<span
+                                    class="badge badge-normal">规律</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 非免疫规划预防接种史 ===== -->
+            <div class="section-card collapsed" id="sec-vaccine">
+                <div class="section-header" onclick="toggleSection('sec-vaccine')">
+                    <div class="section-icon" style="background: #E8F5E9;"><svg viewBox="0 0 24 24" fill="#2E7D32">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg></div>
+                    <div class="section-title">非免疫规划预防接种史</div>
+                    <div class="section-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                        </svg></div>
+                </div>
+                <div class="section-body-wrap">
+                    <div class="section-body">
+                        <div class="drug-item">
+                            <div class="drug-name">流感疫苗</div>
+                            <div class="drug-detail">接种日期：2025-10-15<br>接种机构：黄浦区瑞金二路街道社区卫生服务中心</div>
+                        </div>
+                        <div class="drug-item">
+                            <div class="drug-name">肺炎疫苗</div>
+                            <div class="drug-detail">接种日期：2024-05-20<br>接种机构：黄浦区瑞金二路街道社区卫生服务中心</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部提示 -->
+            <div class="footer-notice">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                </svg>
+                以上结论仅提供参考，如有不适请及时就医
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(id) {
+            const card = document.getElementById(id);
+            card.classList.toggle('collapsed');
+        }
+
+        function goToDetail() {
+            document.getElementById('listPage').classList.remove('active');
+            document.getElementById('detailPage').classList.add('active');
+            document.getElementById('detailPage').style.animation = 'slideInRight 0.35s ease';
+            window.scrollTo(0, 0);
+        }
+
+        function goToList() {
+            document.getElementById('detailPage').classList.remove('active');
+            document.getElementById('listPage').classList.add('active');
+            document.getElementById('listPage').style.animation = 'slideInLeft 0.35s ease';
+            window.scrollTo(0, 0);
+        }
+
+        function goBack() { alert('返回上一页'); }
+
+        document.querySelectorAll('.btn-view-report').forEach(btn => {
+            btn.addEventListener('click', function (e) { e.stopPropagation(); goToDetail(); });
+        });
+
+        let lastScrollTop = 0;
+        const listNavbar = document.querySelector('.list-page .navbar');
+        window.addEventListener('scroll', function () {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (listNavbar) {
+                if (scrollTop > lastScrollTop && scrollTop > 60) listNavbar.style.transform = 'translateY(-100%)';
+                else listNavbar.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
+    </script>
+</body>
+
+</html>
